@@ -126,22 +126,43 @@ async function run() {
       }
     });
 
-    // GET a single artifact by ID
-    app.get('/likedArtifacts/:id', async (req, res) => {
+    // GET all liked artifacts by artId
+    app.get('/likedArtifacts/artId/:id', async (req, res) => {
       try {
         const id = req.params.id; // Extract 'id' from the URL
-        const query = { artId: id }; // Use 'artId' in the query
-        const result = await likedCollection.findOne(query);
-        if (result) {
-          res.send(result);
+        const query = { artId: id }; // Query to find all artifacts with the given artId
+        const result = await likedCollection.find(query).toArray(); // Use find() to get all matching artifacts
+        if (result.length > 0) {
+          res.send(result); // Return all matching artifacts
         } else {
-          res.status(404).send({ error: 'Artifact not found' });
+          res.status(404).send({ error: 'No artifacts found with this artId' });
         }
       } catch (error) {
-        console.error('Error fetching artifact by ID:', error);
+        console.error('Error fetching artifacts by artId:', error);
         res
           .status(500)
-          .send({ error: 'An error occurred while fetching the artifact.' });
+          .send({ error: 'An error occurred while fetching the artifacts.' });
+      }
+    });
+
+    // GET all liked artifacts by likedByEmail
+    app.get('/likedArtifacts/email/:id', async (req, res) => {
+      try {
+        const id = req.params.id; // Extract 'id' from the URL
+        const query = { likedByEmail: id }; // Query to find all artifacts with the given likedByEmail
+        const result = await likedCollection.find(query).toArray(); // Use find() to get all matching artifacts
+        if (result.length > 0) {
+          res.send(result); // Return all matching artifacts
+        } else {
+          res
+            .status(404)
+            .send({ error: 'No liked artifacts found with this email' }); // Updated error message
+        }
+      } catch (error) {
+        console.error('Error fetching artifacts by likedByEmail:', error); // Updated error log
+        res
+          .status(500)
+          .send({ error: 'An error occurred while fetching the artifacts.' });
       }
     });
 
