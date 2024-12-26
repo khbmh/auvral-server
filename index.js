@@ -30,8 +30,8 @@ async function run() {
       .db('artifactsDB')
       .collection('artifacts');
     const likedCollection = client
-      .db('artifactDB')
-      .collection('artifactsApplications');
+      .db('artifactsDB')
+      .collection('LikedArtifacts');
 
     // GET all artifacts
     app.get('/artifacts', async (req, res) => {
@@ -123,6 +123,25 @@ async function run() {
         res.status(500).send({
           error: 'An error occurred while fetching artifact applications.',
         });
+      }
+    });
+
+    // GET a single artifact by ID
+    app.get('/likedArtifacts/:id', async (req, res) => {
+      try {
+        const id = req.params.id; // Extract 'id' from the URL
+        const query = { artId: id }; // Use 'artId' in the query
+        const result = await likedCollection.findOne(query);
+        if (result) {
+          res.send(result);
+        } else {
+          res.status(404).send({ error: 'Artifact not found' });
+        }
+      } catch (error) {
+        console.error('Error fetching artifact by ID:', error);
+        res
+          .status(500)
+          .send({ error: 'An error occurred while fetching the artifact.' });
       }
     });
 
