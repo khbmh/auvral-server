@@ -206,5 +206,5 @@ app.get('/', (req, res) => {
 
 // Vercel automatically assigns a port, so you don't need to specify a port in your code
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running on port: ${port}`);
 });
